@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>{{ 'Editar contacto' if contacto else 'Nuevo contacto' }}</h2>
+  <form method="post">
+    <label>Nombre:</label><br>
+    <input type="text" name="nombre" value="{{ contacto.nombre if contacto else '' }}" required><br><br>
+
+    <label>Teléfono:</label><br>
+    <input type="text" name="telefono" value="{{ contacto.telefono if contacto else '' }}"><br><br>
+
+    <label>Email:</label><br>
+    <input type="email" name="email" value="{{ contacto.email if contacto else '' }}"><br><br>
+
+    <label>Notas:</label><br>
+    <input type="text" name="notas" value="{{ contacto.notas if contacto else '' }}"><br><br>
+
+    <button type="submit">Guardar</button>
+  </form>
+  <p><a href="{{ url_for('index') }}">Volver</a></p>
+{% endblock %}
