@@ -1,10 +1,10 @@
 # Agenda de Contactos — Equipo 4
 
 ## Integrantes
-- Nombre completo integrante 1
-- Nombre completo integrante 2
-- Nombre completo integrante 3
-- Nombre completo integrante 4
+- Diego Alejandro Cano Muñoz
+- Andres felipe Colonia Ocampo
+- Kenneth Ibarra Velasco
+- lizeth Tatiaba Moereno Rosero 
 
 ## Descripción
 Aplicación web sencilla para gestionar contactos (agenda). Permite crear, consultar,
