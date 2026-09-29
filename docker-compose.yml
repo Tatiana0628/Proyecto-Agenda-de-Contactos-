@@ -1,0 +1,40 @@
+services:
+  web:
+    build: .
+    container_name: agenda_web
+    ports:
+      - "8080:5000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-agenda}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - agenda_net
+
+  db:
+    image: postgres:16
+    container_name: agenda_db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-agenda}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - agenda_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agenda_net
+
+networks:
+  agenda_net:
+
+volumes:
+  agenda_data:
