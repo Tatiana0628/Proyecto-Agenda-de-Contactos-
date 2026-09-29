@@ -4,7 +4,7 @@
 - Diego Alejandro Cano Muñoz
 - Andres felipe Colonia Ocampo
 - Kenneth Ibarra Velasco
-- lizeth Tatiaba Moereno Rosero 
+- lizeth Tatiana Moreno Rosero 
 
 ## Descripción
 Aplicación web sencilla para gestionar contactos (agenda). Permite crear, consultar,
