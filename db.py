@@ -27,6 +27,43 @@ def get_connection():
     raise Exception("No fue posible conectar a la base de datos")
 
 
+def buscar_duplicados(telefono, email, excluir_id=None):
+    """Devuelve mensajes de error si el teléfono o el email ya pertenecen a otro contacto.
+
+    El teléfono se compara solo por dígitos y el email sin distinguir mayúsculas.
+    excluir_id permite ignorar el propio contacto al editarlo.
+    """
+    from validaciones import normalizar_telefono, normalizar_email
+
+    errores = []
+    telefono = normalizar_telefono(telefono)
+    email = normalizar_email(email)
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if telefono:
+        cur.execute(
+            "SELECT nombre FROM contactos WHERE regexp_replace(telefono, '\\D', '', 'g') = %s AND id <> %s LIMIT 1;",
+            (telefono, excluir_id or 0),
+        )
+        fila = cur.fetchone()
+        if fila:
+            errores.append(f"El teléfono ya está registrado para el contacto «{fila[0]}».")
+
+    if email:
+        cur.execute(
+            "SELECT nombre FROM contactos WHERE LOWER(TRIM(email)) = %s AND id <> %s LIMIT 1;",
+            (email, excluir_id or 0),
+        )
+        fila = cur.fetchone()
+        if fila:
+            errores.append(f"El email ya está registrado para el contacto «{fila[0]}».")
+
+    cur.close()
+    conn.close()
+    return errores
+
+
 def init_db():
     conn = get_connection()
     cur = conn.cursor()
