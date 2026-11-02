@@ -1,5 +1,12 @@
 # Agenda de Contactos
 
+## Integrantes
+
+- Diego Alejandro Cano Muñoz
+- Andrés Felipe Colonia Ocampo
+- Kenneth Ibarra Velasco
+- Lizeth Tatiana Moreno Rosero
+
 Aplicación web para registrar y administrar contactos. Permite crear, consultar,
 editar y eliminar registros, buscarlos por nombre y filtrar la lista por
 disponibilidad. Los datos se guardan en PostgreSQL.
