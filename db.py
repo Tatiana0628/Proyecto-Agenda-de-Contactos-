@@ -37,8 +37,11 @@ def init_db():
             nombre VARCHAR(100) NOT NULL,
             telefono VARCHAR(30),
             email VARCHAR(100),
-            notas VARCHAR(255)
+            notas VARCHAR(255),
+            disponibilidad VARCHAR(50) DEFAULT 'Disponible'
         );
+        ALTER TABLE contactos ADD COLUMN IF NOT EXISTS disponibilidad VARCHAR(50) DEFAULT 'Disponible';
+        UPDATE contactos SET disponibilidad = 'Disponible' WHERE disponibilidad IS NULL;
         """
     )
     conn.commit()

@@ -1,20 +1,85 @@
 {% extends "base.html" %}
+{% block title %}{{ 'Editar contacto' if contacto else 'Nuevo contacto' }} — Agenda{% endblock %}
+
 {% block content %}
-  <h2>{{ 'Editar contacto' if contacto else 'Nuevo contacto' }}</h2>
-  <form method="post">
-    <label>Nombre:</label><br>
-    <input type="text" name="nombre" value="{{ contacto.nombre if contacto else '' }}" required><br><br>
+<div class="glass-panel form-panel">
+  <div class="form-header">
+    <h2>{{ 'Editar Contacto' if contacto else 'Nuevo Contacto' }}</h2>
+    <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 0.25rem;">
+      {{ 'Actualiza la información y disponibilidad del contacto' if contacto else 'Ingresa los datos para registrar un nuevo contacto' }}
+    </p>
+  </div>
 
-    <label>Teléfono:</label><br>
-    <input type="text" name="telefono" value="{{ contacto.telefono if contacto else '' }}"><br><br>
+  <form method="post" id="contacto-form">
+    <div class="form-group">
+      <label for="nombre">Nombre completo <span class="required-star">*</span></label>
+      <input
+        type="text"
+        id="nombre"
+        name="nombre"
+        class="form-control form-control-no-icon"
+        placeholder="Ej: Laura Gómez"
+        value="{{ contacto.nombre if contacto else '' }}"
+        required
+      >
+    </div>
 
-    <label>Email:</label><br>
-    <input type="email" name="email" value="{{ contacto.email if contacto else '' }}"><br><br>
+    <div class="form-group">
+      <label for="telefono">Teléfono</label>
+      <input
+        type="text"
+        id="telefono"
+        name="telefono"
+        class="form-control form-control-no-icon"
+        placeholder="Ej: +57 300 123 4567"
+        value="{{ contacto.telefono if contacto else '' }}"
+      >
+    </div>
 
-    <label>Notas:</label><br>
-    <input type="text" name="notas" value="{{ contacto.notas if contacto else '' }}"><br><br>
+    <div class="form-group">
+      <label for="email">Correo electrónico</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        class="form-control form-control-no-icon"
+        placeholder="Ej: laura@ejemplo.com"
+        value="{{ contacto.email if contacto else '' }}"
+      >
+    </div>
 
-    <button type="submit">Guardar</button>
+    <div class="form-group">
+      <label for="disponibilidad">Disponibilidad <span class="required-star">*</span></label>
+      <select id="disponibilidad" name="disponibilidad" class="form-control">
+        <option value="Disponible" {% if not contacto or contacto.disponibilidad == 'Disponible' %}selected{% endif %}>
+          Disponible
+        </option>
+        <option value="No disponible" {% if contacto and contacto.disponibilidad == 'No disponible' %}selected{% endif %}>
+          No disponible
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="notas">Notas adicionales</label>
+      <input
+        type="text"
+        id="notas"
+        name="notas"
+        class="form-control form-control-no-icon"
+        placeholder="Ej: Horario de atención mañanas, colega de proyecto..."
+        value="{{ contacto.notas if contacto else '' }}"
+      >
+    </div>
+
+    <div class="form-footer">
+      <a href="{{ url_for('index') }}" class="btn btn-secondary">
+        Cancelar
+      </a>
+      <button type="submit" class="btn btn-primary" id="btn-save-contact">
+        Guardar Contacto
+      </button>
+    </div>
   </form>
-  <p><a href="{{ url_for('index') }}">Volver</a></p>
+</div>
 {% endblock %}
