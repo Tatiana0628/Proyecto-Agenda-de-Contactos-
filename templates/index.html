@@ -1,25 +1,144 @@
 {% extends "base.html" %}
 {% block content %}
-  <p><a href="{{ url_for('add') }}">+ Agregar contacto</a></p>
 
-  <table border="1" cellpadding="6">
-    <tr>
-      <th>Nombre</th><th>Teléfono</th><th>Email</th><th>Notas</th><th>Acciones</th>
-    </tr>
-    {% for c in contactos %}
-    <tr>
-      <td>{{ c.nombre }}</td>
-      <td>{{ c.telefono }}</td>
-      <td>{{ c.email }}</td>
-      <td>{{ c.notas }}</td>
-      <td>
-        <a href="{{ url_for('edit', contacto_id=c.id) }}">Editar</a>
-        &nbsp;
-        <form action="{{ url_for('delete', contacto_id=c.id) }}" method="post" style="display:inline">
-          <button type="submit" onclick="return confirm('¿Eliminar este contacto?')">Eliminar</button>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </table>
+  <!-- Barra de Búsqueda y Filtros -->
+  <div class="glass-panel filter-card">
+    <form method="get" action="{{ url_for('index') }}" class="filter-form" id="search-filter-form">
+      <div class="filter-field">
+        <label for="input-search-nombre">Buscar por nombre</label>
+        <div class="input-icon-wrap">
+          <span class="input-icon">🔍</span>
+          <input
+            type="text"
+            id="input-search-nombre"
+            name="nombre"
+            class="form-control"
+            placeholder="Escribe un nombre..."
+            value="{{ nombre_query or '' }}"
+          >
+        </div>
+      </div>
+
+      <div class="filter-field">
+        <label for="select-disponibilidad">Filtrar disponibilidad</label>
+        <select id="select-disponibilidad" name="disponibilidad" class="form-control form-control-no-icon">
+          <option value="" {% if not disponibilidad_filter %}selected{% endif %}>Todas las disponibilidades</option>
+          <option value="Disponible" {% if disponibilidad_filter == 'Disponible' %}selected{% endif %}>Disponible</option>
+          <option value="No disponible" {% if disponibilidad_filter == 'No disponible' %}selected{% endif %}>No disponible</option>
+        </select>
+      </div>
+
+      <div class="filter-actions">
+        <button type="submit" class="btn btn-primary" id="btn-submit-filter">
+          Buscar
+        </button>
+        {% if nombre_query or disponibilidad_filter %}
+          <a href="{{ url_for('index') }}" class="btn btn-secondary" id="btn-clear-filter">
+            Limpiar filtros
+          </a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <!-- Resultados de Contactos -->
+  <div class="glass-panel">
+    <div class="table-toolbar">
+      <div class="stats-count">
+        <strong>{{ contactos|length }}</strong> {% if contactos|length == 1 %}contacto encontrado{% else %}contactos encontrados{% endif %}
+        {% if nombre_query %}
+          <span class="active-filter-tag">Nombre: "{{ nombre_query }}"</span>
+        {% endif %}
+        {% if disponibilidad_filter %}
+          <span class="active-filter-tag">Disponibilidad: {{ disponibilidad_filter }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if contactos and contactos|length > 0 %}
+      <div class="table-wrapper">
+        <table class="contacts-table" id="tabla-contactos">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Teléfono</th>
+              <th>Email</th>
+              <th>Notas</th>
+              <th>Disponibilidad</th>
+              <th style="text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in contactos %}
+            <tr>
+              <td>
+                <div class="contact-name">
+                  <span>{{ c.nombre }}</span>
+                </div>
+              </td>
+              <td class="contact-meta">{{ c.telefono if c.telefono else '—' }}</td>
+              <td class="contact-meta">{{ c.email if c.email else '—' }}</td>
+              <td class="contact-meta">{{ c.notas if c.notas else '—' }}</td>
+              <td>
+                {% if c.disponibilidad == 'Disponible' %}
+                  <span class="badge badge-available">
+                    <span class="badge-dot"></span>
+                    Disponible
+                  </span>
+                {% elif c.disponibilidad == 'No disponible' %}
+                  <span class="badge badge-unavailable">
+                    <span class="badge-dot"></span>
+                    No disponible
+                  </span>
+                {% else %}
+                  <span class="badge badge-neutral">
+                    {{ c.disponibilidad or 'Disponible' }}
+                  </span>
+                {% endif %}
+              </td>
+              <td style="text-align: right;">
+                <div class="actions-cell" style="justify-content: flex-end;">
+                  <a href="{{ url_for('edit', contacto_id=c.id) }}" class="btn btn-sm btn-secondary">
+                    Editar
+                  </a>
+                  <form action="{{ url_for('delete', contacto_id=c.id) }}" method="post" style="display:inline">
+                    <button
+                      type="submit"
+                      class="btn btn-sm btn-danger"
+                      onclick="return confirm('¿Seguro que deseas eliminar este contacto?')"
+                    >
+                      Eliminar
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">📂</div>
+        <h3 class="empty-title">No se encontraron contactos</h3>
+        <p class="empty-desc">
+          {% if nombre_query or disponibilidad_filter %}
+            No hay contactos que coincidan con los criterios de búsqueda aplicados.
+          {% else %}
+            Aún no tienes contactos registrados en tu agenda.
+          {% endif %}
+        </p>
+        {% if nombre_query or disponibilidad_filter %}
+          <a href="{{ url_for('index') }}" class="btn btn-secondary">
+            Restablecer búsqueda
+          </a>
+        {% else %}
+          <a href="{{ url_for('add') }}" class="btn btn-primary">
+            + Agregar tu primer contacto
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
 {% endblock %}

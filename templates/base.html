@@ -2,11 +2,37 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Agenda de Contactos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Agenda de Contactos{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <h1>Agenda de Contactos</h1>
-  <hr>
-  {% block content %}{% endblock %}
+  <div class="app-container">
+    <header class="app-header">
+      <a href="{{ url_for('index') }}" class="brand">
+        <div class="brand-icon">📇</div>
+        <div class="brand-text">
+          <h1>Agenda de Contactos</h1>
+          <p>Gestión inteligente de contactos y disponibilidad</p>
+        </div>
+      </a>
+      <div>
+        <a href="{{ url_for('add') }}" class="btn btn-primary" id="btn-add-contact">
+          <span>+</span> Nuevo Contacto
+        </a>
+      </div>
+    </header>
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <footer class="app-footer">
+    <p>Agenda de Contactos &bull; Docker &amp; Flask &bull; Integrante 1 (Funcionalidad: Búsqueda y Disponibilidad)</p>
+  </footer>
 </body>
 </html>

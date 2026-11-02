@@ -7,9 +7,10 @@
 - lizeth Tatiana Moreno Rosero 
 
 ## Descripción
-Aplicación web sencilla para gestionar contactos (agenda). Permite crear, consultar,
+Aplicación web para gestionar contactos (agenda). Permite crear, consultar,
 modificar y eliminar contactos, almacenando la información en una base de datos
-PostgreSQL.
+PostgreSQL. Incluye funcionalidades avanzadas de **búsqueda por nombre** y
+**filtro por disponibilidad** tanto en interfaz como vía endpoints/API.
 
 ## Tecnologías utilizadas
 - Python / Flask
@@ -31,15 +32,18 @@ PostgreSQL.
 ## Estructura del proyecto
 ```
 agenda-app/
-├── app.py                # Rutas y lógica de la aplicación Flask
+├── app.py                # Rutas, endpoints y lógica de la aplicación Flask
+├── db.py                 # Conexión, creación y migración de tabla PostgreSQL
 ├── requirements.txt      # Dependencias de Python
 ├── Dockerfile             # Imagen de la aplicación
 ├── docker-compose.yml     # Orquestación de servicios web + db
 ├── .env.example            # Ejemplo de variables de entorno
+├── static/
+│   └── style.css          # Estilos modernos y responsivos
 ├── templates/
-│   ├── base.html
-│   ├── index.html         # Listado de contactos
-│   └── form.html          # Formulario crear/editar
+│   ├── base.html          # Plantilla base con diseño y Google Fonts
+│   ├── index.html         # Listado, barra de búsqueda y filtros
+│   └── form.html          # Formulario crear/editar con disponibilidad
 └── README.md
 ```
 
@@ -99,3 +103,16 @@ el equipo:
 PostgreSQL almacena sus datos en el volumen Docker `agenda_data`, por lo que la
 información se conserva aunque se detengan y reinicien los contenedores
 (`docker compose down` seguido de `docker compose up`).
+
+## Funcionalidad 1 — Búsqueda por Nombre y Filtro de Disponibilidad (Integrante 1)
+- **Base de Datos**: Se agrega automáticamente la columna `disponibilidad VARCHAR(50) DEFAULT 'Disponible'` a la tabla `contactos` si no existe previamente mediante `ALTER TABLE contactos ADD COLUMN IF NOT EXISTS disponibilidad ...`.
+- **Lógica y Formulario**: Los contactos pueden registrarse y editarse con estado `Disponible` o `No disponible`.
+- **Búsqueda y Filtro (Interfaz)**:
+  - Formulario en la vista principal para filtrar en tiempo real por coincidencia parcial en nombre (`ILIKE %nombre%`).
+  - Selector desplegable para filtrar por disponibilidad (`Todas`, `Disponible`, `No disponible`).
+  - Badges visuales con colores (verde para Disponible, rojo/ámbar para No disponible).
+  - Contador de resultados y opción para limpiar/restablecer filtros.
+- **Endpoints**:
+  - `GET /?nombre=<valor>&disponibilidad=<valor>` (interfaz web filtrada).
+  - `GET /buscar?nombre=<valor>&disponibilidad=<valor>` (endpoint directo compatible).
+  - `GET /api/buscar?nombre=<valor>&disponibilidad=<valor>` o `GET /api/contactos` (endpoint REST que responde en formato JSON).
